@@ -1,1 +1,177 @@
+primeiramente apos a criação dos modelos houve a exportação do DDL a partir do DDM
+sem sucesso pela quantidade de erros quando usado no oracle sql developer
+a ideia foi pegar dados de safras de café de minas gerais e espirito santo
+baseando em 2024 nos meses de janeiro e abril
+codigo abaixo:
+DROP TABLE estado CASCADE CONSTRAINTS;
+
+DROP TABLE estado2 CASCADE CONSTRAINTS;
+
+DROP TABLE prodmenes CASCADE CONSTRAINTS;
+
+DROP TABLE prodmenes2 CASCADE CONSTRAINTS;
+
+DROP TABLE prodmenmg CASCADE CONSTRAINTS;
+
+DROP TABLE prodmenmg2 CASCADE CONSTRAINTS;
+
+DROP TABLE safra CASCADE CONSTRAINTS;
+
+
+
+
+
+CREATE TABLE estado (
+    estadoid      NUMBER NOT NULL,
+    nomeestado_mg VARCHAR2(50) NOT NULL
+);
+
+ALTER TABLE estado ADD CONSTRAINT estado_pk PRIMARY KEY ( estadoid );
+
+CREATE TABLE estado2 (
+    estadoid2     NUMBER NOT NULL,
+    nomeestado_es VARCHAR2(50) NOT NULL
+);
+
+ALTER TABLE estado2 ADD CONSTRAINT estado2_pk PRIMARY KEY ( estadoid2 );
+
+CREATE TABLE prodmenes (
+    prodmenid3           NUMBER NOT NULL,
+    mes_jan              VARCHAR2(10) NOT NULL,
+    "QtdSacasArb_4,03M"  NUMBER(10, 2) NOT NULL,
+    "RendMedArb_26sc/ha" NUMBER(10, 2) NOT NULL,
+    safra_safraid        NUMBER NOT NULL
+);
+
+ALTER TABLE prodmenes ADD CONSTRAINT prodmenes_pk PRIMARY KEY ( prodmenid3 );
+
+CREATE TABLE prodmenes2 (
+    prodmenid4             NUMBER NOT NULL,
+    mes_abr                VARCHAR2(10) NOT NULL,
+    "QtdSacasArb_4,1M"     NUMBER(10, 2) NOT NULL,
+    "RendMedArb_26,3sc/ha" NUMBER(10, 2),
+    safra_safraid          NUMBER NOT NULL
+);
+
+ALTER TABLE prodmenes2 ADD CONSTRAINT prodmenes2_pk PRIMARY KEY ( prodmenid4 );
+
+CREATE TABLE prodmenmg (
+    prodmenid              NUMBER NOT NULL,
+    mes_jan                VARCHAR2(10) NOT NULL,
+    "QtdSacasArb_2,34M"    NUMBER(10, 2) NOT NULL,
+    "RendMedArb_25,2sc/ha" NUMBER(10, 2) NOT NULL,
+    safra_safraid          NUMBER NOT NULL
+);
+
+ALTER TABLE prodmenmg ADD CONSTRAINT prodmenmg_pk PRIMARY KEY ( prodmenid );
+
+CREATE TABLE prodmenmg2 (
+    prodmenid2             NUMBER NOT NULL,
+    mes_abr                VARCHAR2(10) NOT NULL,
+    "QtdSacasArb_2,4M"     NUMBER(10, 2) NOT NULL,
+    "RendMedArb_25,5sc/ha" NUMBER(10, 2) NOT NULL,
+    safra_safraid          NUMBER NOT NULL
+);
+
+ALTER TABLE prodmenmg2 ADD CONSTRAINT prodmenmg2_pk PRIMARY KEY ( prodmenid2 );
+
+CREATE TABLE safra (
+    safraid           NUMBER NOT NULL,
+    ano_2024          NUMBER(4) NOT NULL,
+    estado_estadoid   NUMBER NOT NULL,
+    estado2_estadoid2 NUMBER NOT NULL,
+    estadoid          NUMBER NOT NULL
+);
+
+ALTER TABLE safra ADD CONSTRAINT safra_pk PRIMARY KEY ( safraid );
+
+ALTER TABLE prodmenes
+    ADD CONSTRAINT prodmenes_safra_fk FOREIGN KEY ( safra_safraid )
+        REFERENCES safra ( safraid );
+
+ALTER TABLE prodmenes2
+    ADD CONSTRAINT prodmenes2_safra_fk FOREIGN KEY ( safra_safraid )
+        REFERENCES safra ( safraid );
+
+ALTER TABLE prodmenmg
+    ADD CONSTRAINT prodmenmg_safra_fk FOREIGN KEY ( safra_safraid )
+        REFERENCES safra ( safraid );
+
+ALTER TABLE prodmenmg2
+    ADD CONSTRAINT prodmenmg2_safra_fk FOREIGN KEY ( safra_safraid )
+        REFERENCES safra ( safraid );
+
+ALTER TABLE safra
+    ADD CONSTRAINT safra_estado_fk FOREIGN KEY ( estado_estadoid )
+        REFERENCES estado ( estadoid );
+
+ALTER TABLE safra
+    ADD CONSTRAINT safra_estado2_fk FOREIGN KEY ( estado2_estadoid2 )
+        REFERENCES estado2 ( estadoid2 );
+
+asssim tive que alterar algumas coisas e usar no SQLite
+codigo alterado:
+CREATE TABLE estado (
+    estadoid INTEGER PRIMARY KEY,
+    nomeestado TEXT NOT NULL
+);
+
+
+CREATE TABLE safra (
+    safraid INTEGER PRIMARY KEY,
+    ano INTEGER NOT NULL,
+    estadoid INTEGER NOT NULL,
+    FOREIGN KEY (estadoid) REFERENCES estado (estadoid)
+);
+
+
+CREATE TABLE prodmenmg (
+    prodmenid INTEGER PRIMARY KEY AUTOINCREMENT,
+    mes TEXT NOT NULL,
+    qtdsacasarb DECIMAL(10, 2) NOT NULL,
+    rendmedarb DECIMAL(10, 2) NOT NULL,
+    safraid INTEGER NOT NULL,
+    FOREIGN KEY (safraid) REFERENCES safra (safraid)
+);
+
+
+CREATE TABLE prodmenes (
+    prodmenid INTEGER PRIMARY KEY AUTOINCREMENT,
+    mes TEXT NOT NULL,
+    qtdsacasarb DECIMAL(10, 2) NOT NULL,
+    rendmedarb DECIMAL(10, 2) NOT NULL,
+    safraid INTEGER NOT NULL,
+    FOREIGN KEY (safraid) REFERENCES safra (safraid)
+);
+
+
+INSERT INTO estado (estadoid, nomeestado) VALUES (1, 'Minas Gerais');
+INSERT INTO estado (estadoid, nomeestado) VALUES (2, 'Espírito Santo');
+
+
+INSERT INTO safra (safraid, ano, estadoid) VALUES (1, 2024, 1);
+INSERT INTO safra (safraid, ano, estadoid) VALUES (2, 2024, 2);
+
+
+INSERT INTO prodmenmg (mes, qtdsacasarb, rendmedarb, safraid) VALUES ('Janeiro', 2.34, 25.20, 1);
+INSERT INTO prodmenmg (mes, qtdsacasarb, rendmedarb, safraid) VALUES ('Abril', 2.40, 25.50, 1);
+
+
+INSERT INTO prodmenes (mes, qtdsacasarb, rendmedarb, safraid) VALUES ('Janeiro', 4.03, 26.00, 2);
+INSERT INTO prodmenes (mes, qtdsacasarb, rendmedarb, safraid) VALUES ('Abril', 4.10, 26.30, 2);
+
+após isso veio os resultados:
+primeiro a produção total:
+Espirito Santo = 8.12
+Minas = 4.74
+
+produtividade media:
+Espirito Santo = 4.06
+Minas = 2.37
+
+rendimento medio:
+Espirito Santo = 26.15
+Minas = 25.35
+
+
 
