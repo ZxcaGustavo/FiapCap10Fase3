@@ -33,3 +33,4 @@ Produção total de café por estado em uma safra específica.
 Evolução da produção de café ao longo dos anos.
 Ranking dos estados com maior produtividade em uma safra específica.
 Essas consultas utilizam joins e agregações para combinar os dados das tabelas e fornecer informações úteis sobre a safra de café.
+
