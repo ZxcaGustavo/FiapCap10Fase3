@@ -1,1 +1,35 @@
-
+# EXPLICAÇÃO DO QUE FOI FEITO NO  SQLite
+Este é um arquivo de documentação que descreve uma safra de café, incluindo as tabelas de dados e consultas SQL para análise.
+Tabela: Estado
+A primeira tabela descreve os estados onde a safra de café é cultivada. Cada estado tem:
+Um identificador único (estadoid)
+Um nome (nomeestado)
+Tabela: Safra
+A segunda tabela descreve a safra de café em si. Cada safra tem:
+Um identificador único (safraid)
+Um ano de cultivo (ano)
+Um estado onde é cultivada (estadoid)
+Tabela: Produção Mensal - Minas Gerais (prodmenmg)
+A terceira tabela descreve a produção mensal de café em Minas Gerais. Cada registro tem:
+Um identificador único (prodmenid)
+Um mês de produção (mes)
+Uma quantidade de sacas de café produzidas (qtdsacasarb)
+Um rendimento médio de café (rendmedarb)
+Uma safra associada (safraid)
+Tabela: Produção Mensal - Espírito Santo (prodmenes)
+A quarta tabela descreve a produção mensal de café no Espírito Santo. Cada registro tem:
+Um identificador único (prodmenid)
+Um mês de produção (mes)
+Uma quantidade de sacas de café produzidas (qtdsacasarb)
+Um rendimento médio de café (rendmedarb)
+Uma safra associada (safraid)
+Relacionamentos
+As tabelas estão relacionadas da seguinte forma:
+Uma safra está relacionada a um estado.
+Uma produção mensal está relacionada a uma safra.
+Consultas SQL
+As consultas SQL permitem analisar os dados da safra de café:
+Produção total de café por estado em uma safra específica.
+Evolução da produção de café ao longo dos anos.
+Ranking dos estados com maior produtividade em uma safra específica.
+Essas consultas utilizam joins e agregações para combinar os dados das tabelas e fornecer informações úteis sobre a safra de café.
